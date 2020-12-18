@@ -1,0 +1,47 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+    <header th:fragment="header(page)">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="/">Книжный червь</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav ml-auto">
+                    <li th:class="${page} == 'mainPage' ? 'nav-item mx-3 active' : 'nav-item mx-3'">
+                        <a class="nav-link" href="/">Главная</a>
+                    </li>
+                    <li th:class="${page} == 'catalogPage' ? 'nav-item mx-3 active' : 'nav-item mx-3'">
+                        <a class="nav-link"  href="/catalog">Каталог</a>
+                    </li>
+                    <li th:class="${page} == 'basketPage' ? 'nav-item mx-3 active' : 'nav-item mx-3'">
+                        <a class="nav-link"  href="/basket">Корзина</a>
+                    </li>
+                    <li th:class="${page} == 'authPage' ? 'nav-item mx-3 active' : 'nav-item mx-3'">
+                        <a class="nav-link" id="loginButton" href="/auth">Войти</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <script>
+            if (localStorage.getItem('uuid') != null) {
+                $('#loginButton').text('Выйти')[0].href = '/';
+                $('#loginButton').on('click', function () {
+                    localStorage.removeItem('uuid');
+                })
+            }
+
+        </script>
+    </header>
+
+
+
+    <footer class="footer mt-auto py-3" th:fragment="footer">
+        <div class="container">
+            <span class="text-muted">Книжный магазин by zalupai</span>
+        </div>
+    </footer>
+
+
+</html>
