@@ -20,12 +20,12 @@
 
             <div class="d-flex flex-wrap">
                 <div class="card book" th:each="book : ${books}">
-                    <div class="card-body">
-                        <img th:src="${book.imageUrl}" class="d-block m-auto bookImage" height="300" alt="book image">
+                    <div class="card-body d-flex flex-column justify-content-start">
+                        <img th:src="${book.imageUrl}" class="d-block mx-auto bookImage" height="300" alt="book image">
                         <h5 class="card-title bookName" th:utext="${book.bookName}">Название карточки</h5>
                         <p class="text-muted bookYear" th:utext="${book.year}"></p>
                         <p class="card-text text-justify bookDescription" th:utext="${book.description}">With supporting text below as a natural lead-in to additional content.</p>
-                        <button type="button" class="buyBook btn btn-warning" th:value="${book.bookId}">Добавить в корзину</button>
+                        <button type="button" class="buyBook btn btn-warning mt-auto" th:value="${book.bookId}">Добавить в корзину</button>
                     </div>
                 </div>
             </div>
@@ -76,19 +76,25 @@
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script>
         let basket = localStorage.getItem('basket');
+        let uuid = localStorage.getItem('uuid');
         if (basket != null) {
             basket = JSON.parse(basket);
             $('.buyBook').each(function () {
+                if (uuid != null) {
+                    $(this).after('<button type="button" class="deleteBook btn btn-danger mt-2" value="'+this.value+'">Удалить книгу</button>');
+                }
                 for (let book of basket) {
                     if (book.bookId === this.value) {
+
                         toggleBuyButton(this, true);
                         break;
                     }
                 }
             })
         }
-        if (localStorage.getItem('uuid') != null)
+        if (uuid != null)
             $('#adminPanel')[0].style.display = 'block';
+
 
 
 
@@ -158,12 +164,24 @@
             // Отправка запроса
             axios.post('/api/books', {}, {params: newBook}).then(response => {
                 if (!response.data.error) {
-                    location.href = '/';
+                    location.href = '/catalog';
                 } else {
                     console.log(response.data.error);
                 }
             });
             e.preventDefault();
+        });
+
+        $('.deleteBook').on('click', function () {
+            let book = {uuid: localStorage.getItem('uuid'), bookId: this.value};
+            console.log(book);
+            axios.delete('/api/books', {params: book}).then(response => {
+                if (!response.data.error) {
+                    location.href = '/catalog';
+                } else {
+                    console.log(response.data.error);
+                }
+            });
         });
     </script>
 </body>
